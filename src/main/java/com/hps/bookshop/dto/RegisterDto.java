@@ -17,10 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @FieldsMatch(first = "password", second = "confirmPassword", message = "Password and Confirm password don't match")
 public class RegisterDto {
-    @NotBlank(message = "Username cannot be blank")
-    @Size(min = 8, message = "Username must contain at least 8 characters")
-    @Size(max = 30, message = "Username must contain up to 30 characters")
-    private String username;
+    @Email(message = "This must be email format")
+    private String email;
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "Password must contain at least 8 characters")
     @Size(max = 30, message = "Password must contain up to 30 characters")
@@ -31,7 +29,4 @@ public class RegisterDto {
     private RoleType role;
     @Enumerated(value = EnumType.STRING)
     private RoleType[] roleTypes = RoleType.values();
-    @Email
-    private String email;
-
 }

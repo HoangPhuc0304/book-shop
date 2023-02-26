@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -17,6 +18,7 @@ public class VerificationToken {
     private Long id;
     @Column(nullable = false, unique = true)
     private String token;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     @Column(nullable = false)
     private Date expiryDate;
     @OneToOne(fetch = FetchType.LAZY)

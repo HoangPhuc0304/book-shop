@@ -10,5 +10,6 @@ import lombok.Data;
 public class MailDetails {
     private String recipient;
     private String subject;
-    private String link;
+    private String text;
+    private Boolean isHtml;
 }

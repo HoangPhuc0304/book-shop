@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Bookshop</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/index :: head}"><title></title></head>
 <body>
+    <div th:replace="~{fragments/header :: header}"></div>
     <h3>This is customer page</h3>
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

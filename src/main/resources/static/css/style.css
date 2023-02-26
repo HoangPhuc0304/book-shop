@@ -2,3 +2,31 @@
     /* fallback for old browsers */
     background-color: #fff;
 }
+
+.container-body {
+    padding: 1em;
+    background-color: #fff;
+    min-height: calc(100vh - 112px);
+}
+
+.image-scale-1-1 {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+}
+.image-scale-3-2{
+    aspect-ratio: 3/2;
+    object-fit: cover;
+}
+.text-1-line {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.text-2-line {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 60px;
+}

@@ -1,6 +1,6 @@
 package com.hps.bookshop.utils;
 
-import com.hps.bookshop.entity.UserDetailsImpl;
+import com.hps.bookshop.entity.UserPrincipal;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +32,15 @@ public class JwtUtils {
         }
     }
 
-    public Cookie generateJwtCookie(UserDetailsImpl userPrincipal) {
-        return generateJwtCookieFromUsername(userPrincipal.getUsername());
+    public Cookie generateJwtCookie(UserPrincipal userPrincipal) {
+        return generateJwtCookieFromId(userPrincipal.getId());
     }
 
-    public Cookie generateJwtCookieFromUsername(String username) {
-        String jwt = generateTokenFromUsername(username);
+    public Cookie generateJwtCookieFromId(Long id) {
+        String jwt = generateTokenFromId(id);
+        return generateCookieWithToken(jwt);
+    }
+    public Cookie generateCookieWithToken(String jwt) {
         Cookie cookie = new Cookie(jwtCookie, jwt);
         cookie.setMaxAge(24 * 60 * 60);
         cookie.setHttpOnly(true);
@@ -49,8 +52,8 @@ public class JwtUtils {
         return cookie;
     }
 
-    public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    public Long getIdFromJwtToken(String token) {
+        return Long.parseLong(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject());
     }
 
     public boolean validateJwtToken(String authToken) {
@@ -72,9 +75,9 @@ public class JwtUtils {
         return false;
     }
 
-    public String generateTokenFromUsername(String username) {
+    public String generateTokenFromId(Long id) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(Long.toString(id))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)

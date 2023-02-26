@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Bookshop</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/index :: head}"><title></title></head>
 <body>
-    <h3>This is vendor page</h3>
+<div th:replace="~{fragments/header :: header-vendor}"></div>
+<div class="container-body">
+    <div class="main-body">
+
+        <!-- Navbar -->
+        <nav class="navbar-expand-lg">
+            <ul class="navbar-nav">
+                <li class="nav-item me-2">
+                    <a  href="/">Home</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a href="/">Shop</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a href="/">Book</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="row gutters-sm">
+        </div>
+
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer-vendor}"></div>
 </body>
 </html>

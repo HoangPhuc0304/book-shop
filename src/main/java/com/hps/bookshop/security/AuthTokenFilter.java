@@ -1,11 +1,11 @@
 package com.hps.bookshop.security;
 
 import com.hps.bookshop.config.SecurityConfig;
+import com.hps.bookshop.entity.UserPrincipal;
 import com.hps.bookshop.exception.NotFoundException;
 import com.hps.bookshop.model.RefreshToken;
 import com.hps.bookshop.model.User;
-import com.hps.bookshop.service.AuthService;
-import com.hps.bookshop.service.RefreshTokenService;
+import com.hps.bookshop.service.refreshToken.RefreshTokenService;
 import com.hps.bookshop.utils.JwtUtils;
 import com.hps.bookshop.utils.RefreshTokenUtils;
 import jakarta.servlet.FilterChain;
@@ -18,14 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 @Slf4j
 @NoArgsConstructor
@@ -35,15 +33,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private RefreshTokenUtils refreshTokenUtils;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailServiceImpl userDetailsService;
     @Autowired
     private RefreshTokenService refreshTokenService;
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
             String jwt = jwtUtils.getJwtFromCookies(request);
+            System.out.println(jwt);
             if (jwt != null && !jwt.isEmpty()) {
                 //Get user from jwt token & save to security context holder
                 if (jwtUtils.validateJwtToken(jwt)) {
@@ -53,8 +53,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 else {
                     if (jwtUtils.isExpiredJwtToken(jwt)) {
                         String refreshTokenVal = refreshTokenUtils.getRefreshTokenFromCookies(request);
-                        System.out.println(jwt);
-                        System.out.println(refreshTokenVal);
                         boolean validate = refreshTokenService.validateRefreshToken(refreshTokenVal);
                         if (validate) {
                             RefreshToken refreshToken = refreshTokenService
@@ -62,7 +60,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     .orElseThrow(() -> new NotFoundException("Cannot find refresh token with token: " +
                                             refreshTokenVal));
                             User user = refreshToken.getUser();
-                            Cookie jwtCookie = jwtUtils.generateJwtCookieFromUsername(user.getUsername());
+                            Cookie jwtCookie = jwtUtils.generateJwtCookieFromId(user.getId());
                             retrieveAndSaveUserToSecurityContextHolder(jwtCookie.getValue(), request);
                             response.addCookie(jwtCookie);
                         } else {
@@ -71,7 +69,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 response.sendRedirect("/login");
                 return;
             }
@@ -81,20 +80,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    @Override
+//    @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        boolean checkedFilter = Arrays.asList(SecurityConfig.WHITE_LIST_URLS).contains(path);
-        System.out.println(path);
-        System.out.println(checkedFilter);
-        return checkedFilter;
+        return Arrays.asList(SecurityConfig.WHITE_LIST_URLS).stream().anyMatch(x -> antPathMatcher.match(x,path));
     }
 
     private void retrieveAndSaveUserToSecurityContextHolder(String jwt, HttpServletRequest request) {
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        Long userId = jwtUtils.getIdFromJwtToken(jwt);
+        UserPrincipal userPrincipal = (UserPrincipal) userDetailsService.loadUserById(userId);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities()
+                userPrincipal, null, userPrincipal.getAuthorities()
         );
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -2,6 +2,9 @@ package com.hps.bookshop.config;
 
 import com.hps.bookshop.entity.RoleType;
 import com.hps.bookshop.security.AuthTokenFilter;
+import com.hps.bookshop.security.oauth2.CustomOAuth2UserService;
+import com.hps.bookshop.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.hps.bookshop.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +26,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationEntryPoint unauthorizedHandler;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     public static final String[] WHITE_LIST_URLS = {
-            "/login", "/register", "/verifyRegistration", "/access-denied", "/error", "/logout"
+            "/login", "/register", "/verifyRegistration", "/error/**", "/logout", "/forgotPassword",
+            "/confirmCode", "/changePassword", "/oauth2/**", "/css/**","/webjars/**", "/validate-token"
     };
 
     @Bean
@@ -40,13 +48,17 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(o -> o
+                        .authorizationEndpoint()
+                            .baseUri("/oauth2/authorization")
+                            .and()
+                        .userInfoEndpoint()
+                            .userService(customOAuth2UserService)
+                            .and()
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
+                )
                 .logout().disable()
-//                .logout(l -> l.permitAll()
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/login")
-//                        .logoutSuccessHandler((httpServletRequest, httpServletResponse, authentication) -> {
-//                    httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-//                }))
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(unauthorizedHandler)
                 );

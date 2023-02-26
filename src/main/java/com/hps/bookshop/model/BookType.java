@@ -3,13 +3,16 @@ package com.hps.bookshop.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude="books")
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookType {
@@ -25,4 +28,21 @@ public class BookType {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private Set<Book> books;
+
+    public void addBook(Book book) {
+        if(this.books == null)
+            this.books = new HashSet<>();
+        this.books.add(book);
+    }
+    public boolean removeBook(Book book) {
+        return this.books.remove(book);
+    }
+
+    @Override
+    public String toString() {
+        return "BookType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

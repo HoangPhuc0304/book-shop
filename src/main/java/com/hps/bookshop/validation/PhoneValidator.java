@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class PhoneValidator implements ConstraintValidator<PhoneConstraint, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (value == null)
+        if (value == null || value.isEmpty())
             return true;
         Pattern pattern = Pattern.compile("^([0-9]){9,11}");
         Matcher matcher = pattern.matcher(value);
