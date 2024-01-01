@@ -4,6 +4,7 @@ import com.hps.bookshop.dto.*;
 import com.hps.bookshop.entity.RoleType;
 import com.hps.bookshop.entity.UserPrincipal;
 import com.hps.bookshop.model.ChangePassword;
+import com.hps.bookshop.model.User;
 import com.hps.bookshop.service.auth.AuthService;
 import com.hps.bookshop.service.password.ChangePasswordService;
 import com.hps.bookshop.service.verification.VerificationCodeService;

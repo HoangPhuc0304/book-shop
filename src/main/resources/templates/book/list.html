@@ -3,6 +3,9 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{fragments/index :: head}"><title></title></head>
 <body>
+<div sec:authorize="hasAuthority('CUSTOMER')">
+    <div th:replace="~{fragments/header :: header}"></div>
+</div>
 <div sec:authorize="hasAuthority('VENDOR')">
     <div th:replace="~{fragments/header :: header-vendor}"></div>
 </div>
@@ -11,15 +14,42 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="main-breadcrumb">
             <ol class="breadcrumb">
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/">Home</a></li>
                 <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor">Home</a></li>
-                <li class="nav-item mr-2"><a href="/vendor/shops">Shop</a></li>
-                <li class="nav-item mr-2"><a href="/vendor/books">Book</a></li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/shops">Shop</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor/shops">Shop</a></li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/books">Book</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor/books">Book</a></li>
             </ol>
         </nav>
 
         <!-- Searching & filter -->
         <div class="mb-3">
-            <form th:action="@{/vendor/books}" id="searchForm">
+            <form sec:authorize="hasAuthority('CUSTOMER')" th:action="@{/books}" id="searchForm">
+                <div class="row d-flex">
+                    <div class="col-md-5">
+                        <div class="search d-flex">
+                            <i class="fa fa-search"></i>
+                            <input id="keyword" type="search" name="keyword" th:value="${keyword}" required
+                                   class="form-control mr-2" placeholder="Enter keyword">
+                            <button type="submit" class="btn btn-secondary">Search</button>
+                        </div>
+                    </div>
+                    <div class="col-md-3 input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="pageSize">Items per page:</label>
+                        </div>
+                        <select form="searchForm" name="size" th:value="${pageSize}" onchange="changePageSize()" class="size-select"
+                                id="pageSize">
+                            <option th:each="s : ${ {3, 6, 9} }" th:value="${s}" th:text="${s}" th:selected="${s == pageSize}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button id="btnClear" class="btn btn-info">Clear</button>
+                    </div>
+                </div>
+            </form>
+            <form sec:authorize="hasAuthority('VENDOR')" th:action="@{/vendor/books}" id="searchForm">
                 <div class="row d-flex">
                     <div class="col-md-5">
                         <div class="search d-flex">
@@ -57,7 +87,8 @@
                             <h4 class="card-title text-2-line" th:text="${book.name}"/>
                             <p class="text-muted text-1-line" th:text="${book.author}"/>
                             <p class="text-muted" th:text="${book.price}"/>
-                            <a th:href="@{/vendor/books/{bookId}(bookId = ${book.id})}" class="btn btn-info">Go to</a>
+                            <a sec:authorize="hasAuthority('CUSTOMER')" th:href="@{/books/{bookId}(bookId = ${book.id})}" class="btn btn-info">Go to</a>
+                            <a sec:authorize="hasAuthority('VENDOR')" th:href="@{/vendor/books/{bookId}(bookId = ${book.id})}" class="btn btn-info">Go to</a>
                         </div>
                     </div>
                 </div>
@@ -97,6 +128,9 @@
         </nav>
 
     </div>
+</div>
+<div sec:authorize="hasAuthority('CUSTOMER')">
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
 <div sec:authorize="hasAuthority('VENDOR')">
     <div th:replace="~{fragments/footer :: footer-vendor}"></div>

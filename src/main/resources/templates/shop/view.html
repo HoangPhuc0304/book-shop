@@ -118,14 +118,15 @@
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <a class="btn btn-secondary" th:href="@{/vendor}">Back</a>
+                                <a sec:authorize="hasAuthority('CUSTOMER')" class="btn btn-secondary" th:href="@{/}">Back</a>
+                                <a sec:authorize="hasAuthority('VENDOR')" class="btn btn-secondary" th:href="@{/vendor}">Back</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div>
+        <div sec:authorize="hasAuthority('VENDOR')" th:if="${isAuthorize}">
             <a class="btn btn-primary mb-3" th:href="@{/vendor/books/add(shopId=${shopId})}">Create New Book</a>
         </div>
         <div class="row hidden-md-up">
@@ -139,7 +140,8 @@
                             <h4 class="card-title text-2-line" th:text="${book.name}"/>
                             <p class="text-muted text-1-line" th:text="${book.author}"/>
                             <p class="text-muted" th:text="${book.price}"/>
-                            <a th:href="@{/vendor/books/{bookId}(bookId = ${book.id})}" class="btn btn-info">Go to</a>
+                            <a sec:authorize="hasAuthority('CUSTOMER')" th:href="@{/books/{bookId}(bookId = ${book.id})}" class="btn btn-info">Go to</a>
+                            <a sec:authorize="hasAuthority('VENDOR')" th:href="@{/vendor/books/{bookId}(bookId = ${book.id})}" class="btn btn-info">Go to</a>
                         </div>
                     </div>
                 </div>

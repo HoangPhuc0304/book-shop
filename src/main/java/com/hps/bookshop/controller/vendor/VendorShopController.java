@@ -15,53 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @Slf4j
 @AllArgsConstructor
-public class ShopController {
+public class VendorShopController {
     private final UserService userService;
     private final ShopService shopService;
     private final BookService bookService;
-
-    @GetMapping({"/shops", "/vendor/shops"})
-    public String getAllShops(@RequestParam(value = "userId",required = false) String userId, Model model) {
-        try {
-            List<ShopResponseDto> shops;
-            if (userId == null || userId.isEmpty()) {
-                shops = shopService.getAllShops();
-            } else {
-                shops = shopService.getAllShops(Long.parseLong(userId));
-            }
-            UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder
-                    .getContext().getAuthentication().getPrincipal();
-            Long currentUserId = userPrincipal.getId();
-            userId = currentUserId.toString();
-            model.addAttribute("userId", userId);
-            model.addAttribute("shops", shops);
-        } catch (Exception exc) {
-            log.error(exc.getMessage());
-        }
-        return "vendor/shop/list";
-    }
-
-    @GetMapping({"/shops/{shopId}", "/vendor/shops/{shopId}"})
-    public String getShop(@PathVariable("shopId") String shopId, Model model) {
-        try {
-            ShopResponseDto shopResponseDto = shopService.getShop(Long.parseLong(shopId));
-            UserResponseDto userResponseDto = userService.showInfo(shopResponseDto.getUserId());
-            List<BookResponseDto> books = bookService.getBooksFromShop(Long.parseLong(shopId));
-
-            model.addAttribute("shop", shopResponseDto);
-            model.addAttribute("user", userResponseDto);
-            model.addAttribute("shopId", shopId);
-            model.addAttribute("books", books);
-        } catch (Exception exc) {
-            log.error(exc.getMessage());
-        }
-        return "vendor/shop/view";
-    }
 
     @GetMapping("/vendor/shops/add")
     public String addShop(@RequestParam("userId") String userId, Model model) {

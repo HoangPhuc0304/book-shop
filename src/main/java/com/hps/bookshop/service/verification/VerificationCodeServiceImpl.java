@@ -1,5 +1,6 @@
 package com.hps.bookshop.service.verification;
 
+import com.hps.bookshop.entity.AuthProvider;
 import com.hps.bookshop.entity.MailDetails;
 import com.hps.bookshop.exception.ExpirationTimeException;
 import com.hps.bookshop.exception.NotFoundException;
@@ -42,6 +43,9 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         User user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + email));
+        if(user.getProvider() != AuthProvider.LOCAL) {
+            throw new NotMatchException("Cannot use this service with account type: "+user.getProvider().name());
+        }
         //Create & save verify token
         VerificationCode code = generateCode(user);
 

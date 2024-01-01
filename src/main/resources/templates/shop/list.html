@@ -3,6 +3,9 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{fragments/index :: head}"><title></title></head>
 <body>
+<div sec:authorize="hasAuthority('CUSTOMER')">
+    <div th:replace="~{fragments/header :: header}"></div>
+</div>
 <div sec:authorize="hasAuthority('VENDOR')">
     <div th:replace="~{fragments/header :: header-vendor}"></div>
 </div>
@@ -11,14 +14,19 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="main-breadcrumb">
             <ol class="breadcrumb">
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/">Home</a></li>
                 <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor">Home</a></li>
-                <li class="nav-item mr-2"><a href="/vendor/shops">Shop</a></li>
-                <li class="nav-item mr-2"><a href="/vendor/books">Book</a></li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/shops">Shop</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor/shops">Shop</a></li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/books">Book</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor/books">Book</a></li>
             </ol>
         </nav>
-        <div>
+
+        <div sec:authorize="hasAuthority('VENDOR')" th:if="${isAuthorize}">
             <a class="btn btn-primary mb-3" th:href="@{/vendor/shops/add(userId=${userId})}">Create New Shop</a>
         </div>
+
         <div class="row hidden-md-up">
             <div class="col-md-4 mb-4" th:each="shop : ${shops}">
                 <div class="card">
@@ -29,9 +37,11 @@
                         <div class="p-2">
                             <h4 class="card-title" th:text="${shop.name}"/>
                             <p class="text-muted" th:text="ID + ' - ' + ${shop.id}"/>
-                            <a th:href="@{/vendor/shops/{shopId}(shopId = ${shop.id})}" class="btn btn-info">Go to</a>
-                            <a th:href="@{/vendor/shops/{shopId}/edit(shopId = ${shop.id})}" class="btn btn-secondary">Edit</a>
-                            <form th:action="@{/vendor/shops/{shopId}/remove(shopId = ${shop.id})}" method="POST"
+                            <a sec:authorize="hasAuthority('VENDOR')" th:href="@{/vendor/shops/{shopId}(shopId = ${shop.id})}" class="btn btn-info">Go to</a>
+                            <a sec:authorize="hasAuthority('CUSTOMER')" th:href="@{/shops/{shopId}(shopId = ${shop.id})}" class="btn btn-info">Go to</a>
+                            <a sec:authorize="hasAuthority('VENDOR')" th:if="${isAuthorize}" th:href="@{/vendor/shops/{shopId}/edit(shopId = ${shop.id})}" class="btn btn-secondary">Edit</a>
+                            <form sec:authorize="hasAuthority('VENDOR')" th:if="${isAuthorize}"
+                                  th:action="@{/vendor/shops/{shopId}/remove(shopId = ${shop.id})}" method="POST"
                                   class="d-inline">
                                 <button class="btn btn-danger delete-btn" type="submit">Remove</button>
                             </form>
@@ -42,6 +52,9 @@
         </div>
         <br>
     </div>
+</div>
+<div sec:authorize="hasAuthority('CUSTOMER')">
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
 <div sec:authorize="hasAuthority('VENDOR')">
     <div th:replace="~{fragments/footer :: footer-vendor}"></div>

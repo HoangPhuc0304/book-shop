@@ -15,9 +15,12 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="main-breadcrumb">
             <ol class="breadcrumb">
-                <li sec:authorize="hasAuthority('CUSTOMER')" class="breadcrumb-item"><a href="/">Home</a></li>
-                <li sec:authorize="hasAuthority('VENDOR')" class="breadcrumb-item"><a href="/vendor">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Book</li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/">Home</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor">Home</a></li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/shops">Shop</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor/shops">Shop</a></li>
+                <li sec:authorize="hasAuthority('CUSTOMER')" class="nav-item mr-2"><a href="/books">Book</a></li>
+                <li sec:authorize="hasAuthority('VENDOR')" class="nav-item mr-2"><a href="/vendor/books">Book</a></li>
             </ol>
         </nav>
         <!-- /Breadcrumb -->
@@ -167,10 +170,11 @@
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <a class="btn btn-secondary" th:href="@{/vendor/shops/{shopId}(shopId = ${shop.id})}">Back</a>
-                                <a th:href="@{/vendor/books/{bookId}/edit(bookId = ${book.id})}" class="btn btn-info">Edit</a>
-                                <form th:action="@{/vendor/books/{bookId}/remove(bookId = ${book.id})}" method="POST"
-                                      class="d-inline">
+                                <a sec:authorize="hasAuthority('CUSTOMER')" class="btn btn-secondary" th:href="@{/shops/{shopId}(shopId = ${shop.id})}">Back</a>
+                                <a sec:authorize="hasAuthority('VENDOR')" class="btn btn-secondary" th:href="@{/vendor/shops/{shopId}(shopId = ${shop.id})}">Back</a>
+                                <a sec:authorize="hasAuthority('VENDOR')" th:if="${isAuthorize}" th:href="@{/vendor/books/{bookId}/edit(bookId = ${book.id})}" class="btn btn-info">Edit</a>
+                                <form sec:authorize="hasAuthority('VENDOR')" th:if="${isAuthorize}"
+                                      th:action="@{/vendor/books/{bookId}/remove(bookId = ${book.id})}" method="POST" class="d-inline">
                                     <button class="btn btn-danger delete-btn" type="submit">Remove</button>
                                 </form>
                             </div>
