@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
-			<version>1.5.3.Final</version>
+			<version>1.5.5.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
