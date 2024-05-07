@@ -41,7 +41,7 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
-        <version>6.0.5</version>
+        <version>6.0.7</version>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -52,6 +52,51 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-expression</artifactId>
         <version>6.0.8</version>
+      </dependency>
+      <dependency>
+        <groupId>net.minidev</groupId>
+        <artifactId>json-smart</artifactId>
+        <version>2.4.9</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot</artifactId>
+        <version>3.0.13</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>6.1.8</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>9.37.2</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.12</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>1.4.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>6.0.19</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>3.0.7</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
