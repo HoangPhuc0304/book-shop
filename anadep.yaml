@@ -1,0 +1,6 @@
+scanner:
+  path:
+analyzer:
+  ignore:
+    - "org.yaml:snakeyaml"
+    - "org.springframework:spring-expression"
