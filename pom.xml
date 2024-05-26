@@ -94,11 +94,6 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>1.5.3.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>4.6.2</version>
-		</dependency>
 	</dependencies>
 
 	<build>
