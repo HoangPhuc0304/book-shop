@@ -6,7 +6,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.0.2</version>
-    <relativePath></relativePath>
+    <relativePath/>
   </parent>
   <groupId>com.hps</groupId>
   <artifactId>book-shop</artifactId>
@@ -110,7 +110,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>6.0.4</version>
+      <version>6.2.11</version>
     </dependency>
   </dependencies>
   <build>
